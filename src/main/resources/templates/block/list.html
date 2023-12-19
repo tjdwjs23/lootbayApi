@@ -40,7 +40,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="blockList, status : ${blockList.list}">
+    <tr th:each="blockList, status : ${blockList}">
         <th scope="row"><span th:text="${blockList.service_id}"></span></th>
         <td>
             <span th:text="${blockList.name}"></span>
