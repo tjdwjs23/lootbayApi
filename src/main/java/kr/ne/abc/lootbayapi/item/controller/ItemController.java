@@ -24,6 +24,8 @@ public class ItemController {
     @PostMapping("/send-data")
     public void receiveDataFromJavaScript(@RequestBody String jsonData) {
         try {
+            System.out.println("Received data from JavaScript: " + jsonData);
+
             // Convert JSON data to a list of ItemData
             List<ItemData> itemDataList = objectMapper.readValue(
                     jsonData,
@@ -31,13 +33,13 @@ public class ItemController {
             );
 
             // Check if the list is not null and not empty before processing
-            if (itemDataList != null && !itemDataList.isEmpty()) {
-                // Save each item to a file
-                itemDataList.forEach(this::saveDataToFile);
-            } else {
+            if (itemDataList == null || itemDataList.isEmpty()) {
                 System.err.println("Received data from JavaScript is null or empty");
-                return; // Do not proceed to the next log statement
+                return;
             }
+
+            // Save each item to a file
+            itemDataList.forEach(this::saveDataToFile);
 
         } catch (IOException e) {
             // Handle the exception in a more appropriate way, e.g., sending an error response to the client
@@ -46,30 +48,30 @@ public class ItemController {
     }
 
     private void saveDataToFile(ItemData itemData) {
-        // Create the metadata folder if it doesn't exist
-        File folder = new File(metadataFolderPath + File.separator + itemData.getServiceId());
-        if (!folder.exists()) {
-            if (folder.mkdirs()) {
-                System.out.println("Metadata folder created: " + folder.getPath());
-            } else {
-                System.err.println("Failed to create metadata folder: " + folder.getPath());
-                return;  // If folder creation fails, don't proceed to save the file
-            }
-        }
+        createMetadataFolderIfNotExists(itemData.getServiceId());
 
         // Construct the file path
         String fileName = itemData.getName() + ".json";
-        String filePath = folder.getPath() + File.separator + fileName;
+        String filePath = metadataFolderPath + File.separator + itemData.getServiceId() + File.separator + fileName;
 
         // Save the data to the file
         try {
             objectMapper.writeValue(new File(filePath), itemData);
-            System.out.println("Data saved to name: " + fileName);
-            System.out.println("Data saved to path: " + filePath);
         } catch (IOException e) {
             // Handle the exception in a more appropriate way, e.g., sending an error response to the client
             e.printStackTrace();
         }
     }
 
+    private void createMetadataFolderIfNotExists(String serviceId) {
+        // Create the metadata folder if it doesn't exist
+        File folder = new File(metadataFolderPath + File.separator + serviceId);
+        if (!folder.exists()) {
+            if (folder.mkdirs()) {
+                System.out.println("Metadata folder created: " + folder.getPath());
+            } else {
+                System.err.println("Failed to create metadata folder: " + folder.getPath());
+            }
+        }
+    }
 }

@@ -15,9 +15,11 @@ public class ItemData {
     private int id;
     @JsonProperty("service_id")
     private String serviceId;
+    @JsonProperty("item_id")
     private String itemId;
     private String name;
     private String description;
+    @JsonProperty("image_uri")
     private String imageUri;
     private String nhid;
     private int idx;
@@ -29,15 +31,6 @@ public class ItemData {
         @JsonProperty("trait_type")
         private String traitType;
         private String value;
-        private List<Item> items;
-
-        @Getter
-        @Setter
-        public static class Item {
-            @JsonProperty("trait_type")
-            private String traitType;
-            private String value;
-        }
     }
 
     public void setServiceId(String serviceId) {
