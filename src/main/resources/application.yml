@@ -14,4 +14,4 @@ devtools:
 
 metadata:
   folder:
-    path: src/main/resources/assets/metadata
+    path: src/main/resources/static/assets/metadata
