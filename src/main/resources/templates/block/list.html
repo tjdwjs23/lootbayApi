@@ -28,7 +28,11 @@
             </td>
             <td th:text="${block.description}">Otto</td>
             <td th:text="${block.attributes}">@mdo</td>
+
+            <!-- Render the image using th:src -->
+            <img th:src="${block.image_uri}" alt="Image not found"/>
         </tr>
+
         </tbody>
     </table>
     <!-- 페이징 정보 표시 -->
