@@ -25,10 +25,9 @@ public class BlockController {
     @GetMapping("/list")
     public String getBlock(Model model,
                            @RequestParam(required=false, defaultValue = "0") Integer page,
-                           @RequestParam(required=false, defaultValue = "5") Integer size
+                           @RequestParam(required=false, defaultValue = "1") Integer size
         ) {
-        List<Block> blockList = blockService.findAll(page, size); // Assuming Bridge is the type returned by getHistory method
-        model.addAttribute("blockList", blockList);
+        model.addAttribute("blockList", blockService.findAll(page, size));
         return "block/list";
     }
 }

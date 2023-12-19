@@ -1,5 +1,6 @@
 package kr.ne.abc.lootbayapi.block.model;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.ne.abc.lootbayapi.block.entity.Block;
 import kr.ne.abc.lootbayapi.block.entity.BlockRepository;
@@ -26,17 +27,24 @@ public class BlockService {
 
     QBlock qBlock = QBlock.block;
 
-    public List<Block> findAll(Integer page, Integer size){
+    public Map<String, Object> findAll(Integer page, Integer size){
         QBlock qBlock = QBlock.block;
 
-        List<Block> blockList = queryFactory
+        // 페이징 처리를 위한 QueryDSL 사용
+        QueryResults<Block> results = queryFactory
                 .selectFrom(qBlock)
                 .orderBy(qBlock.id.desc())
                 .offset(page * size)
                 .limit(size)
-                .fetch();
+                .fetchResults();
 
-        return blockList;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("list", results.getResults().stream().map(Block.ResponseDto::new).collect(Collectors.toList()));
+        resultMap.put("paging", results.getOffset());
+        resultMap.put("totalCnt", results.getTotal());
+        resultMap.put("totalPage", results.getTotal() / size + (results.getTotal() % size == 0 ? 0 : 1));
+
+        return resultMap;
     }
 
 

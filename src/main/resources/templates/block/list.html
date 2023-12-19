@@ -3,53 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>LootBayApi</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="/assets/js/main.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
 
-        div {
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            margin-bottom: 10px;
-        }
-
-        input {
-            margin-bottom: 5px;
-            padding: 5px;
-        }
-
-        button {
-            padding: 8px;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body>
-<!-- 목록 출력 영역 -->
-<table class="table table-horizontal table-bordered">
-    <thead class="thead-strong">
-    <tr>
-        <th>게시글번호</th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>내용</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="blockList, status : ${blockList}">
-        <th scope="row"><span th:text="${blockList.service_id}"></span></th>
-        <td>
-            <span th:text="${blockList.name}"></span>
-        </td>
-        <td th:text="${blockList.description}">Otto</td>
-        <td th:text="${blockList.attributes}">@mdo</td>
-    </tr>
-    </tbody>
-</table>
-
+    <h1>Block</h1>
+    <!-- 목록 출력 영역 -->
+    <table class="table table-horizontal table-bordered">
+        <thead class="thead-strong">
+        <tr>
+            <th>Service Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Attributes</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- null 체크를 추가 -->
+        <tr th:if="${blockList != null}" th:each="block, status : ${blockList.list}">
+            <th scope="row"><span th:text="${block.service_id}"></span></th>
+            <td>
+                <span th:text="${block.name}"></span>
+            </td>
+            <td th:text="${block.description}">Otto</td>
+            <td th:text="${block.attributes}">@mdo</td>
+        </tr>
+        </tbody>
+    </table>
+    <!-- 페이징 정보 표시 -->
+    <div th:if="${blockList.totalPage > 1}">
+        <ul class="pagination">
+            <li th:each="pageNumber : ${#numbers.sequence(0, blockList.totalPage - 1)}"
+                th:class="${pageNumber == blockList.paging ? 'active' : ''}">
+                <a th:href="@{/list(page=${pageNumber})}">[[${pageNumber + 1}]]</a>
+            </li>
+        </ul>
+    </div>
+    <!-- 페이징 정보 표시 -->
 </body>
 </html>
