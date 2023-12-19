@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LootBayApi</title>
+    <script src="/assets/js/main.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        input {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<!-- 목록 출력 영역 -->
+<table class="table table-horizontal table-bordered">
+    <thead class="thead-strong">
+    <tr>
+        <th>게시글번호</th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>내용</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="blockList, status : ${blockList.list}">
+        <th scope="row"><span th:text="${blockList.service_id}"></span></th>
+        <td>
+            <span th:text="${blockList.name}"></span>
+        </td>
+        <td th:text="${blockList.description}">Otto</td>
+        <td th:text="${blockList.attributes}">@mdo</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

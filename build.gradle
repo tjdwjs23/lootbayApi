@@ -1,34 +1,35 @@
-// --- Plugins Section ---
-plugins {
-    // Spring Boot plugin for the project.
-    id("org.springframework.boot") version "2.7.4"
-    // Dependency management for Spring projects. Helps in ensuring consistent versioning.
-    id("io.spring.dependency-management") version "1.0.14.RELEASE"
-    // Enables the production of WAR packages.
-    id("war")
-}
-
-// --- Project Metadata ---
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+// --- Buildscript Section ---
+buildscript {
+    ext {
+        queryDslVersion = "5.0.0" // Define QueryDSL version
     }
 }
 
-group = "kr.ne.abc.lootbayapi"
-version = "0.0.1-SNAPSHOT"
+// --- Plugins Section ---
+plugins {
+    id 'org.springframework.boot' version '2.7.4' // Spring Boot plugin
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE' // Spring Dependency Management plugin
+    id 'java' // Java plugin
+    id 'war' // WAR plugin
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" // QueryDSL plugin
+}
+
+group = 'kr.ne.lootbayapi' // Project group
+version = '0.0.1-SNAPSHOT' // Project version
+java.sourceCompatibility = JavaVersion.VERSION_11 // Java source compatibility version
+apply plugin: 'war' // Apply WAR plugin
 
 // --- Configurations Section ---
 configurations {
     // Configuring runtime classpath.
-    named("runtimeClasspath") {
-        extendsFrom(getByName("developmentOnly"))
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
     }
-
     // Configuring compile-only classpath.
-    named("compileOnly") {
+    compileOnly {
         // Helps in adding annotation processors without including them in the final artifact.
-        extendsFrom(getByName("annotationProcessor"))
+        extendsFrom annotationProcessor
     }
 }
 
@@ -41,25 +42,83 @@ repositories {
     mavenCentral()
 }
 
+// --- Dependencies Section ---
 dependencies {
     // Spring Boot core and web dependencies.
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
-    implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
-    implementation("org.springframework.boot:spring-boot-starter-tomcat")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-devtools")
-    implementation 'org.projectlombok:lombok:1.18.26'
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-tomcat'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+
+    // thymleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+    // JUnit and Lombok
+    implementation 'junit:junit:4.13.1'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+    // Validation
+    // Add if Spring Boot version is 2.3 or above
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Security
+    // implementation 'org.springframework.boot:spring-boot-starter-security'
+    // implementation 'org.springframework.security:spring-security-test'
+    // implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+
+    // QueryDSL
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+
+    // Spring Data JPA
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.3.2.RELEASE'
+
+    // Log4jdbc-log4j2-jdbc4.1
+    implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4.1', version: '1.16'
+
+    // Commons HttpClient
+    implementation group: 'commons-httpclient', name: 'commons-httpclient', version: '3.1'
+
+    // JSON
+    implementation 'org.json:json:20200518'
+
+    // MariaDB
+    implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.2'
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation 'org.junit.platform:junit-platform-launcher'
 
-    // Utilities for Java's standard library.
-    implementation("org.apache.commons:commons-lang3:3.12.0")
+    // Rest Assured
+    testImplementation group: 'io.rest-assured', name: 'spring-mock-mvc', version: '3.0.0'
+    testCompileOnly 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+}
 
-    // JSON handling library.
-    implementation("org.json:json:20210307")
+def querydslDir = "$buildDir/generated/querydsl"
 
+querydsl { // QueryDSL Configuration
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+
+sourceSets { // QueryDSL Configuration
+    main.java.srcDir querydslDir
+}
+
+configurations { // QueryDSL Configuration
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+
+compileQuerydsl { // QueryDSL Configuration
+    options.annotationProcessorPath = configurations.querydsl
 }
 
 tasks.named('test') {
