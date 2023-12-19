@@ -9,7 +9,6 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
-@Setter
 public class ItemData {
 
     private int id;
@@ -26,7 +25,6 @@ public class ItemData {
     private List<Attribute> attributes;
 
     @Getter
-    @Setter
     public static class Attribute {
         @JsonProperty("trait_type")
         private String traitType;
