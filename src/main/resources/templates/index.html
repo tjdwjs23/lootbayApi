@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LootBayApi</title>
+    <script src="/assets/js/main.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        input {
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Item</h1>
+    <div>
+        <h2>Item 등록</h2>
+        <input type="text" id="item_insert_service_id" placeholder="service_id">
+        <input type="text" id="item_insert_id" placeholder="item_id">
+        <input type="text" id="item_insert_name" placeholder="item_name"> <br />
+        <input type="text" id="item_insert_description" placeholder="item_description">
+        <input type="file" id="item_insert_img" placeholder="item_img"> <br />
+        <input type="text" id="item_insert_nhid" placeholder="item_nhid">
+        <input type="text" id="item_insert_idx" placeholder="item_idx">
+        <div>
+            Attribute
+            <input type="text" id="item_insert_attribute_name" placeholder="attribute_name">
+            <input type="text" id="item_insert_attribute_value" placeholder="attribute_value">
+        </div>
+        <button id="item_insert">등록</button>
+    </div>
+    <div>
+        <h2>Item 조회</h2>
+        <button id="item_select">조회</button>
+    </div>
+    <div>
+        <h2>Item 삭제</h2>
+        <input type="text" id="item_delete_id" placeholder="item_index">
+        <button id="item_delete">삭제</button>
+    </div>
+    <div>
+        <h2>Response</h2>
+        <span id="item_response"></span>
+    </div>
+</body>
+</html>
